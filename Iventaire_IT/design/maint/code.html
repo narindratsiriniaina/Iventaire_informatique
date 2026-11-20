@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DST Madagascar - Maintenance Management</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Design System Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "secondary-fixed": "#ffdad6",
+                "inverse-surface": "#2e3130",
+                "on-primary-fixed": "#00201a",
+                "secondary-fixed-dim": "#ffb3ac",
+                "secondary-container": "#da3433",
+                "tertiary-fixed-dim": "#ffb5a1",
+                "on-tertiary": "#ffffff",
+                "surface-container": "#eceeec",
+                "tertiary": "#4e2013",
+                "on-tertiary-fixed-variant": "#6d382a",
+                "secondary": "#b6171e",
+                "tertiary-fixed": "#ffdbd1",
+                "primary-fixed": "#afefdd",
+                "tertiary-container": "#693527",
+                "outline-variant": "#bfc9c4",
+                "surface-bright": "#f8faf7",
+                "on-secondary-fixed": "#410003",
+                "primary": "#00342b",
+                "surface-tint": "#29695b",
+                "on-secondary-container": "#fffbff",
+                "primary-container": "#004d40",
+                "on-surface-variant": "#3f4945",
+                "on-secondary-fixed-variant": "#930010",
+                "primary-fixed-dim": "#94d3c1",
+                "inverse-primary": "#94d3c1",
+                "surface-container-highest": "#e1e3e0",
+                "error-container": "#ffdad6",
+                "on-background": "#191c1b",
+                "surface-variant": "#e1e3e0",
+                "surface-container-lowest": "#ffffff",
+                "on-tertiary-fixed": "#370e04",
+                "background": "#f8faf7",
+                "error": "#ba1a1a",
+                "on-error": "#ffffff",
+                "surface-container-high": "#e7e9e6",
+                "surface": "#f8faf7",
+                "inverse-on-surface": "#eff1ef",
+                "on-secondary": "#ffffff",
+                "on-primary": "#ffffff",
+                "outline": "#707975",
+                "surface-dim": "#d8dbd8",
+                "on-surface": "#191c1b",
+                "on-tertiary-container": "#e89f8c",
+                "on-error-container": "#93000a",
+                "on-primary-fixed-variant": "#065043",
+                "on-primary-container": "#7ebdac",
+                "surface-container-low": "#f2f4f1"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "stack-lg": "24px",
+                "sidebar-width": "260px",
+                "gutter": "24px",
+                "card-gap": "24px",
+                "container-padding": "32px",
+                "stack-sm": "8px",
+                "stack-md": "16px"
+            },
+            "fontFamily": {
+                "display-lg": ["Inter"],
+                "label-md": ["Inter"],
+                "body-md": ["Inter"],
+                "title-lg": ["Inter"],
+                "title-md": ["Inter"],
+                "headline-md": ["Inter"],
+                "label-sm": ["Inter"],
+                "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                "title-md": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+                "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+                "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .status-chip-pending { background-color: #fef3c7; color: #92400e; }
+        .status-chip-completed { background-color: #d1fae5; color: #065f46; }
+        .status-chip-cancelled { background-color: #fee2e2; color: #991b1b; }
+        
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- Side Navigation Bar -->
+<aside class="w-[260px] h-screen fixed left-0 top-0 bg-primary dark:bg-primary-container flex flex-col p-stack-md border-r border-outline-variant shadow-sm z-50">
+<div class="mb-10 px-2">
+<h1 class="text-title-lg font-title-lg font-bold text-on-primary">DST Madagascar</h1>
+<p class="text-on-primary opacity-70 text-label-sm uppercase tracking-wider">Service Topographique</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Dashboard -->
+<a class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-fixed-variant transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-title-md text-title-md">Dashboard</span>
+</a>
+<!-- Inventory -->
+<a class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-fixed-variant transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-title-md text-title-md">Inventory</span>
+</a>
+<!-- Movements -->
+<a class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-fixed-variant transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">swap_horiz</span>
+<span class="font-title-md text-title-md">Movements</span>
+</a>
+<!-- Maintenance (Active) -->
+<a class="flex items-center gap-3 px-4 py-3 bg-surface dark:bg-surface-container text-primary dark:text-primary rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">build</span>
+<span class="font-title-md text-title-md">Maintenance</span>
+</a>
+<!-- Reports -->
+<a class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-fixed-variant transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<span class="font-title-md text-title-md">Reports</span>
+</a>
+<!-- Users -->
+<a class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-fixed-variant transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-title-md text-title-md">Users</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-white/10 space-y-2">
+<a class="flex items-center gap-3 px-4 py-2 text-on-primary opacity-80 hover:opacity-100 transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-title-md text-title-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-primary opacity-80 hover:opacity-100 transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-title-md text-title-md">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-[260px] min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-[260px] right-0 h-16 bg-surface dark:bg-surface-dim flex justify-between items-center px-gutter border-b border-outline-variant z-40">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full text-body-md focus:ring-2 focus:ring-primary transition-all" placeholder="Rechercher une maintenance..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4">
+<button class="relative text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-colors cursor-pointer active:opacity-70">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-secondary rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-colors cursor-pointer active:opacity-70">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+</div>
+<div class="h-8 w-px bg-outline-variant mx-2"></div>
+<div class="flex items-center gap-3">
+<div class="text-right hidden sm:block">
+<p class="text-body-md font-bold leading-tight">Admin DST</p>
+<p class="text-label-sm text-on-surface-variant">Administrateur</p>
+</div>
+<img class="w-10 h-10 rounded-full border-2 border-primary object-cover" data-alt="A professional headshot of a government administrator in a crisp white shirt, clean lighting, soft background, corporate and authoritative atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwJ7oVH3to6KMGbSvnMxbcY-bB_d8sBXYpd1A2cOCfjLWvMxUC3MD4npvV0mn9UyrS4-7QyVaSdlDdqFV0wFZ2fYo2UqeqU9EIDPYzmhBQxMy8fbW5WLyCQhmbSzAXDuA94oQqRCLvseMBvQvbuR0kw8oR8G7gW2nxXldc-IO0VGVmiBy0ZDcyMYLqCUcfr_NngMhXKLiFR4NbNx3vJQDQAK-yTrWTk8JMH8VGQ7JZ8CdLflFwYkR_jbowGhnjuY9Yj728KqLryt5G"/>
+</div>
+</div>
+</header>
+<!-- Content Body -->
+<div class="pt-24 p-gutter max-w-7xl mx-auto">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="font-display-lg text-display-lg text-primary mb-1">Gestion de la Maintenance</h2>
+<p class="text-body-lg text-on-surface-variant">Suivi et planification des interventions techniques de la DST.</p>
+</div>
+<button class="bg-primary text-on-primary px-6 py-3 rounded-lg font-title-md flex items-center gap-2 hover:shadow-lg transition-all active:scale-95">
+<span class="material-symbols-outlined">add</span>
+                    Nouvelle Maintenance
+                </button>
+</div>
+<!-- Bento Layout Content -->
+<div class="bento-grid">
+<!-- Statistics Row (Asymmetric Cards) -->
+<div class="col-span-12 md:col-span-4 glass-card rounded-xl p-stack-md flex flex-col justify-between">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-primary bg-primary-fixed p-2 rounded-lg">engineering</span>
+<span class="text-label-md text-on-surface-variant">Aujourd'hui</span>
+</div>
+<div>
+<h3 class="text-display-lg font-display-lg leading-none mb-1">12</h3>
+<p class="text-body-md text-on-surface-variant">Interventions en cours</p>
+</div>
+<div class="mt-4 pt-4 border-t border-outline-variant">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span class="text-label-md">+4% par rapport à hier</span>
+</div>
+</div>
+</div>
+<div class="col-span-12 md:col-span-4 glass-card rounded-xl p-stack-md flex flex-col justify-between border-l-4 border-l-secondary">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-secondary bg-secondary-fixed p-2 rounded-lg">priority_high</span>
+<span class="text-label-md text-on-surface-variant">Critique</span>
+</div>
+<div>
+<h3 class="text-display-lg font-display-lg leading-none mb-1 text-secondary">03</h3>
+<p class="text-body-md text-on-surface-variant">Urgences signalées</p>
+</div>
+<div class="mt-4 pt-4 border-t border-outline-variant">
+<button class="text-secondary font-title-md text-body-md hover:underline">Voir les alertes</button>
+</div>
+</div>
+<div class="col-span-12 md:col-span-4 glass-card rounded-xl p-stack-md flex flex-col justify-between">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-tertiary bg-tertiary-fixed p-2 rounded-lg">check_circle</span>
+<span class="text-label-md text-on-surface-variant">Mois en cours</span>
+</div>
+<div>
+<h3 class="text-display-lg font-display-lg leading-none mb-1">148</h3>
+<p class="text-body-md text-on-surface-variant">Tâches terminées</p>
+</div>
+<div class="mt-4 pt-4 border-t border-outline-variant">
+<div class="flex items-center gap-2 text-tertiary">
+<span class="material-symbols-outlined text-sm">assignment_turned_in</span>
+<span class="text-label-md">92% de succès opérationnel</span>
+</div>
+</div>
+</div>
+<!-- Main Task List Container -->
+<div class="col-span-12 lg:col-span-8 space-y-stack-md">
+<div class="bg-white rounded-xl border border-outline-variant overflow-hidden">
+<div class="px-6 py-4 border-b border-outline-variant flex items-center justify-between">
+<h3 class="font-title-md text-title-md">Journal des Interventions</h3>
+<div class="flex gap-2">
+<select class="text-label-md border-outline-variant rounded-md py-1 bg-surface-container-low text-on-surface-variant">
+<option>Toutes les tâches</option>
+<option>En cours</option>
+<option>Terminé</option>
+</select>
+</div>
+</div>
+<div class="divide-y divide-outline-variant">
+<!-- Task Item 1 -->
+<div class="p-4 hover:bg-surface-container-lowest transition-colors flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">satellite_alt</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-title-md text-body-lg">Calibration Station Antananarivo</h4>
+<span class="px-3 py-1 rounded-full text-label-sm status-chip-pending">In progress</span>
+</div>
+<div class="flex items-center gap-4 text-label-md text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">calendar_today</span> 24 Oct 2023</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">person</span> Assigné à: Jean-Marc R.</span>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<!-- Task Item 2 -->
+<div class="p-4 hover:bg-surface-container-lowest transition-colors flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">router</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-title-md text-body-lg">Remplacement Serveur MapData</h4>
+<span class="px-3 py-1 rounded-full text-label-sm status-chip-completed">Completed</span>
+</div>
+<div class="flex items-center gap-4 text-label-md text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">calendar_today</span> 22 Oct 2023</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">person</span> Assigné à: Saholy F.</span>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<!-- Task Item 3 -->
+<div class="p-4 hover:bg-surface-container-lowest transition-colors flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">edit_road</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-title-md text-body-lg">Mise à jour bornage Zone A-24</h4>
+<span class="px-3 py-1 rounded-full text-label-sm status-chip-cancelled">Cancelled</span>
+</div>
+<div class="flex items-center gap-4 text-label-md text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">calendar_today</span> 20 Oct 2023</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">person</span> Assigné à: Unassigned</span>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Technician & Side Action Panel -->
+<div class="col-span-12 lg:col-span-4 space-y-card-gap">
+<!-- Quick Assignment Card -->
+<div class="bg-white rounded-xl border border-outline-variant p-6">
+<h3 class="font-title-md text-title-md mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">assignment_ind</span>
+                            Affectation Rapide
+                        </h3>
+<div class="space-y-4">
+<div>
+<label class="block text-label-md text-on-surface-variant mb-1">Choisir un Technicien</label>
+<select class="w-full bg-surface-container-low border-outline-variant rounded-lg text-body-md focus:ring-primary focus:border-primary">
+<option>Séléctionner...</option>
+<option>Jean-Marc Rakoto (Disponible)</option>
+<option>Saholy Fanomezantsoa (Occupée)</option>
+<option>Andry Randrianantoandro (En congé)</option>
+</select>
+</div>
+<div>
+<label class="block text-label-md text-on-surface-variant mb-1">Priorité</label>
+<div class="flex gap-2">
+<button class="flex-1 py-2 px-3 border border-outline-variant rounded-lg text-label-md hover:bg-surface-container-highest transition-all">Basse</button>
+<button class="flex-1 py-2 px-3 border border-primary text-primary bg-primary-fixed rounded-lg text-label-md">Moyenne</button>
+<button class="flex-1 py-2 px-3 border border-outline-variant rounded-lg text-label-md hover:bg-secondary-fixed transition-all">Haute</button>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary py-2 rounded-lg font-title-md hover:bg-primary-container transition-all">Assigner la tâche</button>
+</div>
+</div>
+<!-- Location Insight Card -->
+<div class="bg-white rounded-xl border border-outline-variant overflow-hidden">
+<div class="h-32 bg-surface-container relative">
+<div class="w-full h-full bg-cover bg-center opacity-80" data-location="Antananarivo" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBGfe9XhoskP4ZNehH3AZxCnbaXc5U8JHUc_asf5Y0GTTSYmZONML_OPfLgJQW0J5dBv11DDqIB-y_lwLtyHCUHJ43G_T7IajP4avvJPvi94tCFp_nwhmyw8Wm7lo-faHwlOj7l3cL9Q0Np5NejlUav2JvF42TPcTkkAKh1d2Tad1RPlrwr5oNNVIKnCpcZJb9GxTgrQ5BahQQ5fyVzJyHj3m8u9ItEICgOcA85uJGL9I5j_5O4MBXl0MNcs7mFHzH4jaLNkOsCJpr3')"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-container bg-white/90 p-2 rounded-full shadow-lg">location_on</span>
+</div>
+</div>
+<div class="p-4">
+<h4 class="font-title-md text-title-md mb-2">Zone Critique de Service</h4>
+<p class="text-body-md text-on-surface-variant mb-3 leading-relaxed">
+                                Le secteur du Palais de la Reine signale une fluctuation des données topo. Intervention recommandée sous 48h.
+                            </p>
+<div class="flex items-center gap-2">
+<img class="w-8 h-8 rounded-md object-cover" data-alt="Close up of a professional GPS surveyor tool on a tripod in a lush Madagascar landscape, golden hour light, high precision equipment, professional cinematography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKLa5ReUUeo8nO6vMIFGseS-5owEgyQWmhgCZhpsHliS9HWoVZEgZf4k7d2ywELYvCc0xqBCDpBzIiOGwR5aMGbi78t7NmuLCtV_WeUVjavIii-cHwIHSMwrFKSYtYkTY9BtcMI2_w5IsAR9wp8C_oyOf60nMrfuZkn3nXRhnX7xjDbNBgglvY1E1djR0ENqUAy-sBUPbPATcfmJsgT5R22dgDOrrVWi1Sqm99e0XVuCpLlFDJZyIWH_ZWDoRczh2e7COQoPa7Kw5x"/>
+<span class="text-label-md font-bold">Unité de Terrain Alpha-01</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Section (Horizontal Details) -->
+<div class="col-span-12 glass-card rounded-xl p-6">
+<div class="flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="flex gap-8">
+<div>
+<p class="text-label-sm text-on-surface-variant uppercase tracking-widest">Temps de réponse</p>
+<p class="text-title-lg font-bold text-primary">1.2 h</p>
+</div>
+<div class="w-px h-10 bg-outline-variant"></div>
+<div>
+<p class="text-label-sm text-on-surface-variant uppercase tracking-widest">Coût estimé (Mois)</p>
+<p class="text-title-lg font-bold text-primary">4,250,000 Ar</p>
+</div>
+<div class="w-px h-10 bg-outline-variant"></div>
+<div>
+<p class="text-label-sm text-on-surface-variant uppercase tracking-widest">Disponibilité parc</p>
+<p class="text-title-lg font-bold text-primary">94%</p>
+</div>
+</div>
+<div class="flex gap-4">
+<button class="px-4 py-2 border border-outline-variant rounded-lg text-body-md font-title-md hover:bg-surface-container-low transition-all">Exporter PDF</button>
+<button class="px-4 py-2 border border-primary text-primary rounded-lg text-body-md font-title-md hover:bg-primary-fixed transition-all">Historique Global</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple micro-interaction for active nav items
+        const navItems = document.querySelectorAll('nav a');
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                if(item.classList.contains('bg-surface')) return;
+                
+                navItems.forEach(i => {
+                    i.classList.remove('bg-surface', 'text-primary');
+                    i.classList.add('text-on-primary', 'opacity-80');
+                    const icon = i.querySelector('.material-symbols-outlined');
+                    if(icon) icon.style.fontVariationSettings = "'FILL' 0";
+                });
+                
+                item.classList.add('bg-surface', 'text-primary');
+                item.classList.remove('text-on-primary', 'opacity-80');
+                const icon = item.querySelector('.material-symbols-outlined');
+                if(icon) icon.style.fontVariationSettings = "'FILL' 1";
+            });
+        });
+    </script>
+</body></html>
